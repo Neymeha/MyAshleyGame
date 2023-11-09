@@ -1,5 +1,6 @@
 package com.neymeha.thegame.views;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -50,7 +51,10 @@ public class MenuScreen implements Screen {
 
     @Override
     public void show() {
-
+        /*
+        Поскольку мы храним наши скрины целиком, при переключении экрана нам нужно менять инпут процессор
+        */
+        hud.setInputProcessor();
     }
 
     @Override

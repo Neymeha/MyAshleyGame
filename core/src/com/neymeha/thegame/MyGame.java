@@ -43,8 +43,7 @@ public class MyGame extends Game {
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
-		loadingScreen = new LoadingScreen(this);
-		setScreen(loadingScreen);
+		setScreen(new LoadingScreen(this));
 	}
 
 	/*
