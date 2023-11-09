@@ -63,7 +63,7 @@ public class MenuScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         gameViewport.update(width, height);
-        hud.getStage().getViewport().update(width,height);
+        hud.updateViewport(width,height);
     }
 
     @Override
@@ -83,6 +83,6 @@ public class MenuScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        hud.dispose();
     }
 }

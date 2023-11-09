@@ -2,14 +2,12 @@ package com.neymeha.thegame.huds;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.neymeha.thegame.MyGame;
@@ -33,11 +31,12 @@ public class MenuScreenHud {
     /*
     Наши кнопки с дополнительным функционалом анимаций для нажатия и др
     */
-    private ImageButton startGameBtn, infoGameBtn, progressGameBtn, quitGameBtn;
+    private ImageTextButton newGameBtn, preferencesGameBtn, progressGameBtn, exitGameBtn;
     /*
-
+    Таблица для размещения наших кнопок
     */
     private Table table;
+    private Skin skin;
 
     public MenuScreenHud(MyGame parent) {
         this.parent = parent; // установили зависимость
@@ -45,7 +44,18 @@ public class MenuScreenHud {
         Инициализируем классы
         */
         gameViewport = new FitViewport(GameConfig.GAME_WIDTH, GameConfig.GAME_HEIGHT, new OrthographicCamera()); // можно поменять на стретч тогда кнопки будут растягивать с окном а не менять размер
+
         stage = new Stage(gameViewport, parent.getBatch());
+
+        skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+
+        table = new Table();
+
+        newGameBtn = new ImageTextButton("New Game", skin);
+        preferencesGameBtn = new ImageTextButton("Preferences", skin);
+        progressGameBtn = new ImageTextButton("Progress", skin);
+        exitGameBtn = new ImageTextButton("Exit", skin);
+
 
         Gdx.input.setInputProcessor(stage); // установили наш процессор обработки ввода пользователя
         /*
@@ -55,15 +65,18 @@ public class MenuScreenHud {
     }
 
     private void setupTableAndButtons() {
-        // добавляем image на кнопку без нажатия и с нажатием, при этом функционал смены текстуры после нажатия уже вшит в функционал ImageButton
-        startGameBtn = new ImageButton(new SpriteDrawable(new Sprite(new Texture("Buttons/Menu/Play_Unpressed.png"))),
-                new SpriteDrawable(new Sprite(new Texture("Buttons/Menu/Play_Pressed.png"))));
-        progressGameBtn = new ImageButton(new SpriteDrawable(new Sprite(new Texture("Buttons/Menu/Stats_Unpressed.png"))),
-                new SpriteDrawable(new Sprite(new Texture("Buttons/Menu/Stats_Pressed.png"))));
-        infoGameBtn = new ImageButton(new SpriteDrawable(new Sprite(new Texture("Buttons/Menu/Info_Unpressed.png"))),
-                new SpriteDrawable(new Sprite(new Texture("Buttons/Menu/Info_Pressed.png"))));
-        quitGameBtn = new ImageButton(new SpriteDrawable(new Sprite(new Texture("Buttons/Menu/Cross_Unpressed.png"))),
-                new SpriteDrawable(new Sprite(new Texture("Buttons/Menu/Cross_Pressed.png"))));
+        /*
+        добавляем image на кнопку без нажатия и с нажатием, при этом функционал смены текстуры после нажатия уже вшит в функционал ImageButton
+            UPD код ниже не актуальный, заменил отдельные текстуры кнопок на готовый скин
+        */
+//        startGameBtn = new ImageButton(new SpriteDrawable(new Sprite(new Texture("Buttons/Menu/Play_Unpressed.png"))),
+//                new SpriteDrawable(new Sprite(new Texture("Buttons/Menu/Play_Pressed.png"))));
+//        progressGameBtn = new ImageButton(new SpriteDrawable(new Sprite(new Texture("Buttons/Menu/Stats_Unpressed.png"))),
+//                new SpriteDrawable(new Sprite(new Texture("Buttons/Menu/Stats_Pressed.png"))));
+//        infoGameBtn = new ImageButton(new SpriteDrawable(new Sprite(new Texture("Buttons/Menu/Info_Unpressed.png"))),
+//                new SpriteDrawable(new Sprite(new Texture("Buttons/Menu/Info_Pressed.png"))));
+//        quitGameBtn = new ImageButton(new SpriteDrawable(new Sprite(new Texture("Buttons/Menu/Cross_Unpressed.png"))),
+//                new SpriteDrawable(new Sprite(new Texture("Buttons/Menu/Cross_Pressed.png"))));
 
         setupActionsForButtons(); // добавляем действия на нажатие кнопки
 
@@ -72,28 +85,29 @@ public class MenuScreenHud {
         таким образом, чтобы она заполнила всю доступную область родительского
         контейнера. Добавляем дебаг временно что бы наблюдать границы кнопок и нашей таблицы.
         */
-        table = new Table();
         table.setFillParent(true);
         table.setDebug(true);
 
         /*
         Изменяем размер кнопок ибо они гигансткие, так же добавляем небольшие отступы, так же добавляем их в наш table
         что бы потом они так же попали в наш stage
+            UPD больше size не меняем, заменили кнопки на скин, старый код по кнопкам ниже
+            .size(GameConfig.GAME_WIDTH/2f, GameConfig.GAME_HEIGHT/4f-GameConfig.GAME_HEIGHT/10f);
         */
-        table.add(startGameBtn).size(GameConfig.GAME_WIDTH/2f, GameConfig.GAME_HEIGHT/4f-GameConfig.GAME_HEIGHT/10f);
+        table.add(newGameBtn).fillX();
         table.row().pad(10, 0, 10, 0);
-        table.add(infoGameBtn).size(GameConfig.GAME_WIDTH/2f, GameConfig.GAME_HEIGHT/4f-GameConfig.GAME_HEIGHT/10f);
+        table.add(preferencesGameBtn).fillX();
         table.row();
-        table.add(progressGameBtn).size(GameConfig.GAME_WIDTH/2f, GameConfig.GAME_HEIGHT/4f-GameConfig.GAME_HEIGHT/10f);
+        table.add(progressGameBtn).fillX();
         table.row().pad(10, 0, 0, 0);
-        table.add(quitGameBtn).size(GameConfig.GAME_WIDTH/2f, GameConfig.GAME_HEIGHT/4f-GameConfig.GAME_HEIGHT/10f);
+        table.add(exitGameBtn).fillX(); // заполнили кнопку по горизонтали она единственная выделяется
 
         stage.addActor(table); // добавляем таблицу с элементами на Stage для дальнейшей обработки
     }
 
     private void setupActionsForButtons() {
         // добавляем слушателей каждой кнопке на случай изменения, с последующей сменой экрана
-        startGameBtn.addListener(new ChangeListener() {
+        newGameBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
 //                parent.changeScreen(MyGame.MAIN);
@@ -105,13 +119,13 @@ public class MenuScreenHud {
 
             }
         });
-        infoGameBtn.addListener(new ChangeListener() {
+        preferencesGameBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
 
             }
         });
-        quitGameBtn.addListener(new ChangeListener() {
+        exitGameBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.exit();
@@ -125,16 +139,26 @@ public class MenuScreenHud {
         на экране. В libgdx она используется для определения перспективы и преобразования координат объектов в
         мировых координатах в координаты экрана.
         */
+        // Применение настроек вьюпорта к текущему состоянию экрана
         gameViewport.apply(true); // вместо строки ниже, и все заработало корректно
 //        parent.getBatch().setProjectionMatrix(this.getStage().getCamera().combined); // пришлось убрать эту строку, из за нее кнопки растягивались при изменении экрана а этого быть не должно было
-        this.getStage().draw(); // отрисовка актеров
-        this.getStage().act(delta); // и обработка инпута
+        this.stage.draw(); // отрисовка актеров
+        this.stage.act(delta); // и обработка инпута
     }
 
     /*
     Геттер для нашего Стейдж так как нам нужно будет его отрисовывать на нужном нам экране.
+        UPD больше геттер не нужен, внес всю нужную логику сюда в класс, диспоуз, ресайз/апдейт
     */
-    public Stage getStage() {
-        return stage;
+//    public Stage getStage() {
+//        return stage;
+//    }
+
+    public void dispose(){
+        stage.dispose();
+    }
+
+    public void updateViewport(int width, int height){
+        gameViewport.update(width,height);
     }
 }

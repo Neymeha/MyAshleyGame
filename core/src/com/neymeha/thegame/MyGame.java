@@ -1,6 +1,5 @@
 package com.neymeha.thegame;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.neymeha.thegame.views.*;
@@ -15,11 +14,13 @@ import com.neymeha.thegame.views.*;
 public class MyGame extends Game {
 	/*
 	Далее переменные наших экранов, мы их будем хранить в основном классе игры
+		UPD так в гайде сделано, но я сомневаюсь что есть смысл хранить наши скрины по ссылкам, пусть лучше они уходят
+		в сбор мусора как по мне. Но это не точно, наверное зависит от используемой памяти
 	*/
 	private LoadingScreen loadingScreen;
 	private PreferencesScreen preferencesScreen;
 	private MenuScreen menuScreen;
-	private MainScreen mainScreen;
+	private GameScreen gameScreen;
 	private EndScreen endScreen;
 
 	/*
@@ -61,8 +62,8 @@ public class MyGame extends Game {
 				this.setScreen(preferencesScreen);
 				break;
 			case MAIN:
-				if (mainScreen == null) mainScreen = new MainScreen(this);
-				this.setScreen(mainScreen);
+				if (gameScreen == null) gameScreen = new GameScreen(this);
+				this.setScreen(gameScreen);
 				break;
 			case ENDGAME:
 				if (endScreen == null) endScreen = new EndScreen(this);
