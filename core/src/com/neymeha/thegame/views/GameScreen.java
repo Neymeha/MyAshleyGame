@@ -1,14 +1,18 @@
 package com.neymeha.thegame.views;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.utils.ScreenUtils;
+import com.neymeha.thegame.GameCore;
 import com.neymeha.thegame.MyGame;
 
 public class GameScreen implements Screen {
-
     private MyGame parent;
+    private GameCore core;
 
     public GameScreen(MyGame parent) {
         this.parent = parent;
+        core = new GameCore();
     }
 
     @Override
@@ -18,7 +22,9 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-
+        core.logicStep(delta);
+        ScreenUtils.clear(0, 0, 0, 1);
+        core.debugRender();
     }
 
     @Override

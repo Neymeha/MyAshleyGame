@@ -63,7 +63,7 @@ public class PreferencesScreenHud {
         Настраиваем наши элементы
         */
         table.setFillParent(true);
-        table.setDebug(true);
+//        table.setDebug(true); // убираем за ненадобностью
 
         volumeMusicSlider.setValue( GameConfig.getMusicVolume() ); // задали значение по дефолту
         volumeSoundSlider.setValue( GameConfig.getSoundVolume() );
@@ -98,6 +98,15 @@ public class PreferencesScreenHud {
             }
         });
 
+        soundCheckbox.addListener( new EventListener() { // добавляем слушателя
+            @Override
+            public boolean handle(Event event) {
+                boolean enabled = soundCheckbox.isChecked(); // записываем значение чек бокса (стоит ли галочка)
+                GameConfig.setSoundEnabled( enabled ); // и сохраняем его в настройки
+                return false;
+            }
+        });
+
         backButton.addListener(new ChangeListener() { // добавили слушателя
             @Override
             public void changed(ChangeEvent event, Actor actor) { // при изменении состояния кнопки выполняем смену экрана
@@ -108,21 +117,21 @@ public class PreferencesScreenHud {
         /*
         Добавляем все элементы в таблицу
         */
-        table.add(titleLabel);
-        table.row();
-        table.add(volumeMusicLabel);
+        table.add(titleLabel).colspan(2); // colspan(2) центрируем надпись по середине между двух столбцов
+        table.row().pad(10,0,0,10);
+        table.add(volumeMusicLabel).left();
         table.add(volumeMusicSlider);
-        table.row();
-        table.add(musicOnOffLabel);
+        table.row().pad(10,0,0,10);
+        table.add(musicOnOffLabel).left();
         table.add(musicCheckbox);
-        table.row();
-        table.add(volumeSoundLabel);
+        table.row().pad(10,0,0,10);
+        table.add(volumeSoundLabel).left();
         table.add(volumeSoundSlider);
-        table.row();
-        table.add(soundOnOffLabel);
+        table.row().pad(10,0,0,10);
+        table.add(soundOnOffLabel).left();
         table.add(soundCheckbox);
-        table.row();
-        table.add(backButton);
+        table.row().pad(10,0,0,10);
+        table.add(backButton).colspan(2);
 
         stage.addActor(table); // и наконец добавили все в стейдж
     }

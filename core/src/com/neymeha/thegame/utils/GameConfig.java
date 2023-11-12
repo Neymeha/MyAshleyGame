@@ -4,8 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 
 public class GameConfig {
-    public static final int GAME_WIDTH = 480;
+    public static final int GAME_WIDTH = 450;
     public static final int GAME_HEIGHT = 800;
+    public static final int PPM = 32; // пиксели на каждый метр - нужно для преобразования физического мира относительно нашего экрана
     /*
     Ниже наши ключи для хранимых значений в Preferences
     */

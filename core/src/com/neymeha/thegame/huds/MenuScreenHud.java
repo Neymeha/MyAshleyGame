@@ -12,7 +12,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.neymeha.thegame.MyGame;
 import com.neymeha.thegame.utils.GameConfig;
-import com.neymeha.thegame.views.PreferencesScreen;
 
 public class MenuScreenHud {
     private MyGame parent; // для переключения экранов
@@ -47,10 +46,10 @@ public class MenuScreenHud {
         /*
         Инициализируем кнопки с помощь скина добавляя им текст
         */
-        ImageTextButton newGameBtn = new ImageTextButton("New Game", skin);
-        ImageTextButton preferencesGameBtn = new ImageTextButton("Preferences", skin);
-        ImageTextButton progressGameBtn = new ImageTextButton("Progress", skin);
-        ImageTextButton exitGameBtn = new ImageTextButton("Exit", skin);
+        ImageTextButton gameBtn = new ImageTextButton("Game", skin);
+        ImageTextButton preferencesBtn = new ImageTextButton("Preferences", skin);
+        ImageTextButton progressBtn = new ImageTextButton("Progress", skin);
+        ImageTextButton exitBtn = new ImageTextButton("Exit", skin);
 
         /*
         setFillParent(true) - используется для установки размеров и позиции таблицы
@@ -61,25 +60,25 @@ public class MenuScreenHud {
         table.setDebug(true);
 
         // добавляем слушателей каждой кнопке на случай изменения, с последующей сменой экрана
-        newGameBtn.addListener(new ChangeListener() {
+        gameBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-//                parent.changeScreen(MyGame.MAIN);
+                parent.changeScreen(MyGame.GAME);
             }
         });
-        progressGameBtn.addListener(new ChangeListener() {
+        progressBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
 
             }
         });
-        preferencesGameBtn.addListener(new ChangeListener() {
+        preferencesBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 parent.changeScreen(MyGame.PREFERENCES);
             }
         });
-        exitGameBtn.addListener(new ChangeListener() {
+        exitBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Gdx.app.exit();
@@ -90,13 +89,13 @@ public class MenuScreenHud {
         Добавляем в таблицу актеров и дорбавляем заполнение по Х что бы все кнопки были одинакового размера,
         роу - переход к следующей ячейке таблицы вниз, так же добавляем отступы
         */
-        table.add(newGameBtn).fillX();
+        table.add(gameBtn).fillX();
         table.row().pad(10, 0, 10, 0);
-        table.add(preferencesGameBtn).fillX();
+        table.add(preferencesBtn).fillX();
         table.row();
-        table.add(progressGameBtn).fillX();
+        table.add(progressBtn).fillX();
         table.row().pad(10, 0, 0, 0);
-        table.add(exitGameBtn).fillX(); // заполнили кнопку по горизонтали она единственная выделяется
+        table.add(exitBtn).fillX(); // заполнили кнопку по горизонтали она единственная выделяется
 
         stage.addActor(table); // добавляем таблицу с элементами на Stage для дальнейшей обработки
     }
