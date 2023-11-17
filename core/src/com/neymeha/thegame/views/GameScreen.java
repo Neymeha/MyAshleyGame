@@ -1,5 +1,6 @@
 package com.neymeha.thegame.views;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -17,7 +18,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-
+        core.setInputController(); // добавили контроллер кнопок в инпут для обработки
     }
 
     @Override

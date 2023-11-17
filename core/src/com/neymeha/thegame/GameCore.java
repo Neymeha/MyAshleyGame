@@ -1,18 +1,27 @@
 package com.neymeha.thegame;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.neymeha.thegame.utils.BodyFactory;
 import com.neymeha.thegame.utils.GameConfig;
+import com.neymeha.thegame.utils.KeyboardController;
+import com.neymeha.thegame.utils.MyContactListener;
 
 public class GameCore {
     public World world; // ядро игры должно содержать общий мир игры для всех физических обьектов
     private Box2DDebugRenderer debugRenderer; // ядро должно содержать дебаг что бы мы могли посмотреть на наши физ обьекты
     private OrthographicCamera camera; // без камеры тоже никуда, он отвечает за размер нашего окна в мир так сказать
-    private Body bodyd; // тело для тестового пола
-    private Body bodys; // тело для тестового обьекта
-    private Body bodyk; // тело для тестового движущегося обьекта
+    private KeyboardController controller; // ипут контроллер для реакции на ввод
+    /*
+    код ниже не представляет ценности для ядра, и создан для тестов
+    */
+    private Body bodyd; // тело для тестового статичного пола
+    private Body bodys; // тело для тестового динамичного обьекта
+    private Body bodyk; // тело для тестового кинематичного обьекта
+    private Body player;
+    public boolean isSwimming = false; // флаг на нахождение в воде
 
     public GameCore(){
         /*
@@ -28,26 +37,31 @@ public class GameCore {
         Создали наш дебаг рендер для отрисовки физ мира
         */
         debugRenderer = new Box2DDebugRenderer(true,true,true,true,true,true);
+
+        controller = new KeyboardController();
         /*
         Создали наши обьекты тестовые в мире
         */
         createFloor();
-        createObject();
-        createMovingObject();
+//        createObject();
+//        createMovingObject();
 
         /*
         инициализируем наш синглтон для создания тел
         */
         BodyFactory bodyFactory = BodyFactory.getInstance(world);
 
-        // тестовый шар 1
-        bodyFactory.makeCirclePolyBody(1, 1, 2, BodyFactory.RUBBER, BodyDef.BodyType.DynamicBody,false);
+        // add a player
+        player = bodyFactory.makeBoxPolyBody(1, -3, 2, 2, BodyFactory.RUBBER, BodyDef.BodyType.DynamicBody,false);
 
-        // 2
-        bodyFactory.makeCirclePolyBody(4, 1, 2, BodyFactory.STEEL, BodyDef.BodyType.DynamicBody,false);
+        // add some water
+        Body water =  bodyFactory.makeBoxPolyBody(1, -8, 40, 10, BodyFactory.RUBBER, BodyDef.BodyType.StaticBody,false);
+        water.setUserData("IAMTHESEA");
 
-        // 3
-        bodyFactory.makeCirclePolyBody(-4, 1, 2, BodyFactory.STONE, BodyDef.BodyType.DynamicBody,false);
+        // make the water a sensor so it doesn't obstruct our player
+        bodyFactory.makeAllFixturesSensors(water);
+
+        world.setContactListener(new MyContactListener(this));
 
     }
 
@@ -56,7 +70,7 @@ public class GameCore {
         // create a new body definition (type and location)
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(0, -10);
+        bodyDef.position.set(0, -11);
 
         // add it to the world
         bodyd = world.createBody(bodyDef);
@@ -133,6 +147,30 @@ public class GameCore {
 
     public void logicStep(float delta){ // обновляем наш мир что бы он не был статичен
         /*
+        если игрок в воде применяет к нему выталкивающую силу
+        */
+        if(isSwimming){
+            player.applyForceToCenter(0, 40f, true);
+        }
+        /*
+        Добавляем реакции на наши флаги из контролера что бы управлять нашим игроком
+        */
+        if(controller.left){
+            player.applyForceToCenter(-10, 0,true);
+        }else if(controller.right){
+            player.applyForceToCenter(10, 0,true);
+        }else if(controller.up){
+            player.applyForceToCenter(0, 10,true);
+        }else if(controller.down){
+            player.applyForceToCenter(0, -10,true);
+        }
+        /*
+        check if mouse1 is down (player click) then if true check if point intersects
+        */
+        if(controller.isMouse1Down && controller.pointIntersectsBody(player,controller.mouseLocation,camera)){
+            System.out.println("Player was clicked");
+        }
+        /*
         delta - это время, прошедшее с момента последнего обновления мира. Оно обычно представляет собой разницу во
         времени между двумя кадрами игры. Значение delta обычно передается в метод world.step() из основного цикла игры.
 
@@ -151,5 +189,9 @@ public class GameCore {
 
     public void debugRender(){ // метод для отрисовки дебаг рендера
         debugRenderer.render(world, camera.combined);
+    }
+
+    public void setInputController() {
+        Gdx.input.setInputProcessor(controller);
     }
 }

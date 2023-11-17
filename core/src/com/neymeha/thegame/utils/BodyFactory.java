@@ -175,4 +175,15 @@ public class BodyFactory {
         body.createFixture(fixtureDef); // создаем физическое тело с использованием фиксчур дефенишн
         polygon.dispose();
     }
+
+    /*
+    Метод который:
+    для каждой фикстуры вызывается метод setSensor(true), который устанавливает фикстуру в режим "сенсора".В режиме
+    "сенсора" физическая фикстура не взаимодействует с другими объектами, но все еще может обнаруживать столкновения.
+    */
+    public void makeAllFixturesSensors(Body bod){
+        for(Fixture fix :bod.getFixtureList()){
+            fix.setSensor(true);
+        }
+    }
 }
