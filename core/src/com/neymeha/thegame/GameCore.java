@@ -1,27 +1,32 @@
 package com.neymeha.thegame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.neymeha.thegame.utils.BodyFactory;
-import com.neymeha.thegame.utils.GameConfig;
-import com.neymeha.thegame.utils.KeyboardController;
-import com.neymeha.thegame.utils.MyContactListener;
+import com.neymeha.thegame.utils.*;
 
 public class GameCore {
     public World world; // ядро игры должно содержать общий мир игры для всех физических обьектов
     private Box2DDebugRenderer debugRenderer; // ядро должно содержать дебаг что бы мы могли посмотреть на наши физ обьекты
-    private OrthographicCamera camera; // без камеры тоже никуда, он отвечает за размер нашего окна в мир так сказать
+    public OrthographicCamera camera; // без камеры тоже никуда, он отвечает за размер нашего окна в мир так сказать
     private KeyboardController controller; // ипут контроллер для реакции на ввод
+    /*
+	Мой кастомный ассет манаджер
+	*/
+    public MyAssetManager assetManager;
     /*
     код ниже не представляет ценности для ядра, и создан для тестов
     */
     private Body bodyd; // тело для тестового статичного пола
     private Body bodys; // тело для тестового динамичного обьекта
     private Body bodyk; // тело для тестового кинематичного обьекта
-    private Body player;
+    public Body player;
+    public Sound ping, boing;
     public boolean isSwimming = false; // флаг на нахождение в воде
+    public static final int BOING_SOUND = 0; // new
+    public static final int PING_SOUND = 1; //new
 
     public GameCore(){
         /*
@@ -39,34 +44,37 @@ public class GameCore {
         debugRenderer = new Box2DDebugRenderer(true,true,true,true,true,true);
 
         controller = new KeyboardController();
+
+        assetManager = new MyAssetManager();
+
+        world.setContactListener(new MyContactListener(this));
         /*
         Создали наши обьекты тестовые в мире
         */
         createFloor();
 //        createObject();
 //        createMovingObject();
-
+        // говорим что загружать
+        assetManager.queueAddSounds();
+        // загружаем и ждем окончания
+        assetManager.manager.finishLoading();
+        // присваиваем переменным два звука загруженных
+        ping = assetManager.manager.get("sounds/ping.wav", Sound.class);
+        boing = assetManager.manager.get("sounds/boing.wav", Sound.class);
         /*
         инициализируем наш синглтон для создания тел
         */
         BodyFactory bodyFactory = BodyFactory.getInstance(world);
-
-        // add a player
+        // создаем игрока
         player = bodyFactory.makeBoxPolyBody(1, -3, 2, 2, BodyFactory.RUBBER, BodyDef.BodyType.DynamicBody,false);
-
-        // add some water
+        // создаем воду
         Body water =  bodyFactory.makeBoxPolyBody(1, -8, 40, 10, BodyFactory.RUBBER, BodyDef.BodyType.StaticBody,false);
         water.setUserData("IAMTHESEA");
-
-        // make the water a sensor so it doesn't obstruct our player
+        // делаем все фиксчуры воды сенсерами, тогда сквозь воду можно пройти и она фиксирует столкновение
         bodyFactory.makeAllFixturesSensors(water);
-
-        world.setContactListener(new MyContactListener(this));
-
     }
 
     private void createFloor() {
-
         // create a new body definition (type and location)
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
@@ -193,5 +201,16 @@ public class GameCore {
 
     public void setInputController() {
         Gdx.input.setInputProcessor(controller);
+    }
+
+    public void playSound(int sound){
+        switch(sound){
+            case BOING_SOUND:
+                boing.play();
+                break;
+            case PING_SOUND:
+                ping.play();
+                break;
+        }
     }
 }

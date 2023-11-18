@@ -27,13 +27,13 @@ public class MyContactListener implements ContactListener {
             return;
         }
 
-//        if(fa.getBody().getType() == BodyDef.BodyType.StaticBody){
-//            this.shootUpInAir(fa, fb);
-//        }else if(fb.getBody().getType() == BodyDef.BodyType.StaticBody){
-//            this.shootUpInAir(fb, fa);
-//        }else{
-//            // neither a nor b are static so do nothing
-//        }
+        if(fa.getBody().getType() == BodyDef.BodyType.StaticBody){
+            this.shootUpInAir(fa, fb);
+        }else if(fb.getBody().getType() == BodyDef.BodyType.StaticBody){
+            this.shootUpInAir(fb, fa);
+        }else{
+            // neither a nor b are static so do nothing
+        }
     }
 
     @Override
@@ -65,5 +65,6 @@ public class MyContactListener implements ContactListener {
     private void shootUpInAir(Fixture staticFixture, Fixture otherFixture){
         System.out.println("Adding Force"); // написали текст в консоль
         otherFixture.getBody().applyForceToCenter(new Vector2(-100000,-100000), true); // применили силу, разбудили обьект
+        core.playSound(GameCore.BOING_SOUND); // при применении силы будет использовать звук
     }
 }

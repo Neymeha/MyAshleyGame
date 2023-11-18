@@ -6,9 +6,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.neymeha.thegame.GameCore;
 import com.neymeha.thegame.MyGame;
 import com.neymeha.thegame.huds.MenuScreenHud;
 import com.neymeha.thegame.utils.GameConfig;
+import com.neymeha.thegame.utils.MyAssetManager;
 
 public class MenuScreen implements Screen {
 
@@ -35,18 +37,20 @@ public class MenuScreen implements Screen {
     OrthographicCamera позволяет настроить размеры и положение области мира, которая будет отображаться на экране.
     */
 
-    public MenuScreen(MyGame parent) {
+    public MenuScreen(MyGame parent, GameCore core) {
         this.parent = parent; // инициализировали зависимость
         /*
         Далее инициализация наших обьявленный переменных выше
         */
-        hud = new MenuScreenHud(parent);
+        hud = new MenuScreenHud(parent, core);
         mainCamera = new OrthographicCamera();
 
         mainCamera.setToOrtho(false, GameConfig.GAME_WIDTH, GameConfig.GAME_HEIGHT); // задаем размер камеры
         mainCamera.position.set(GameConfig.GAME_WIDTH/2f, GameConfig.GAME_HEIGHT/2f, 0); // центруем камеру
 
         gameViewport = new FitViewport(GameConfig.GAME_WIDTH, GameConfig.GAME_HEIGHT, mainCamera);
+
+
     }
 
     @Override

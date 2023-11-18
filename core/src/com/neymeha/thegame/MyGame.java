@@ -1,7 +1,9 @@
 package com.neymeha.thegame;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.neymeha.thegame.utils.MyAssetManager;
 import com.neymeha.thegame.views.*;
 
 /*
@@ -28,6 +30,8 @@ public class MyGame extends Game {
 	*/
 	private SpriteBatch batch;
 
+	private GameCore core;
+
 	/*
 	Далее статичные константы для метода смены экрана
 	*/
@@ -36,6 +40,8 @@ public class MyGame extends Game {
 	public final static int GAME = 2;
 	public final static int ENDGAME = 3;
 
+	public Music playingSong;
+
 	/*
 	Единственный обязательно переопределяемый метод при наследовании класса Game, в нем мы инициируем
 	загрузочный экран
@@ -43,7 +49,20 @@ public class MyGame extends Game {
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
-		setScreen(new LoadingScreen(this));
+		core = new GameCore();
+		loadingScreen = new LoadingScreen(this);
+		setScreen(loadingScreen);
+
+		/*
+		Загруждаем музыку, ждем окончания загрузки, присваиваем переменной, поскольку музыка в главном классе запущена
+		она будет играть на протяжении всей игры.
+		*/
+		core.assetManager.queueAddMusic();
+		core.assetManager.manager.finishLoading();
+		playingSong = core.assetManager.manager.get(core.assetManager.playingSong);
+		// закольцовываем музыку и запускаем
+		playingSong.setLooping(true);
+		playingSong.play();
 	}
 
 	/*
@@ -53,7 +72,7 @@ public class MyGame extends Game {
 	public void changeScreen(int screen) {
 		switch (screen) {
 			case MENU:
-				if (menuScreen == null) menuScreen = new MenuScreen(this);
+				if (menuScreen == null) menuScreen = new MenuScreen(this, core);
 				this.setScreen(menuScreen);
 				break;
 			case PREFERENCES:
@@ -61,7 +80,7 @@ public class MyGame extends Game {
 				this.setScreen(preferencesScreen);
 				break;
 			case GAME:
-				if (gameScreen == null) gameScreen = new GameScreen(this);
+				if (gameScreen == null) gameScreen = new GameScreen(this, core);
 				this.setScreen(gameScreen);
 				break;
 			case ENDGAME:
@@ -85,5 +104,7 @@ public class MyGame extends Game {
 	public void dispose() {
 		super.dispose();
 		batch.dispose();
+		playingSong.dispose();
+		core.assetManager.manager.dispose();
 	}
 }

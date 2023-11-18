@@ -10,15 +10,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.neymeha.thegame.GameCore;
 import com.neymeha.thegame.MyGame;
 import com.neymeha.thegame.utils.GameConfig;
+import com.neymeha.thegame.utils.MyAssetManager;
 
 public class MenuScreenHud {
     private MyGame parent; // для переключения экранов
     private Stage stage; // для размещения актеров
 
 
-    public MenuScreenHud(MyGame parent) {
+    public MenuScreenHud(MyGame parent, GameCore core) {
         this.parent = parent; // установили зависимость
         /*
         Инициализируем вьюпорт
@@ -33,8 +35,11 @@ public class MenuScreenHud {
         /*
         Добавляем skin для нашего проекта в частности для кнопок
         */
-        Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
-
+//        Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+        // Не верное написание, ради одного скина новый обьект, надо переделать
+        core.assetManager.queueAddSkin();  //new
+        core.assetManager.manager.finishLoading(); // new
+        Skin skin = core.assetManager.manager.get("skin/glassy-ui.json"); // new
         /*
         Вся остальная доп настройка наших актеров для нашего стейдж
         */
