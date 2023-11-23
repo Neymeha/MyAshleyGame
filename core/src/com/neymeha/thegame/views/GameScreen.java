@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.neymeha.thegame.GameCore;
 import com.neymeha.thegame.MyGame;
@@ -12,7 +14,12 @@ import com.neymeha.thegame.utils.GameConfig;
 public class GameScreen implements Screen {
     private MyGame parent;
     private GameCore core;
-    public Texture playerTex; // временный код для текстуры игрока
+    /*
+        временный код для текстуры игрока, поскольку мы используем текстурный атлас то сначала нам нужна переменная
+        текстурного атласа, в которой мы далее будем искать регион текстур по названию
+    */
+    public TextureAtlas gameAtlas; // текстурный атлас
+    public TextureAtlas.AtlasRegion playerTex; // регион текстур по атласу
 
     public GameScreen(MyGame parent, GameCore core) {
         this.parent = parent;
@@ -20,7 +27,8 @@ public class GameScreen implements Screen {
 
         this.core.assetManager.queueAddImages();
         this.core.assetManager.manager.finishLoading();
-        playerTex = this.core.assetManager.manager.get(core.assetManager.playerImage);
+        gameAtlas = this.core.assetManager.manager.get(core.assetManager.gameImages); // ищем текстурный атлас
+        playerTex = gameAtlas.findRegion("player"); // ищем регион текстур в атласе
     }
 
     @Override
@@ -72,6 +80,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        playerTex.dispose();
+        playerTex.getTexture().dispose();
     }
 }

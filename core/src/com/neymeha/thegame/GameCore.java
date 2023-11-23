@@ -59,8 +59,8 @@ public class GameCore {
         // загружаем и ждем окончания
         assetManager.manager.finishLoading();
         // присваиваем переменным два звука загруженных
-        ping = assetManager.manager.get("sounds/ping.wav", Sound.class);
-        boing = assetManager.manager.get("sounds/boing.wav", Sound.class);
+        ping = assetManager.manager.get(assetManager.pingSound, Sound.class);
+        boing = assetManager.manager.get(assetManager.boingSound, Sound.class);
         /*
         инициализируем наш синглтон для создания тел
         */

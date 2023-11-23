@@ -13,7 +13,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.neymeha.thegame.GameCore;
 import com.neymeha.thegame.MyGame;
 import com.neymeha.thegame.utils.GameConfig;
-import com.neymeha.thegame.utils.MyAssetManager;
 
 public class MenuScreenHud {
     private MyGame parent; // для переключения экранов
@@ -39,7 +38,7 @@ public class MenuScreenHud {
         // Не верное написание, ради одного скина новый обьект, надо переделать
         core.assetManager.queueAddSkin();  //new
         core.assetManager.manager.finishLoading(); // new
-        Skin skin = core.assetManager.manager.get("skin/glassy-ui.json"); // new
+        Skin skin = core.assetManager.manager.get(core.assetManager.skin); // new
         /*
         Вся остальная доп настройка наших актеров для нашего стейдж
         */

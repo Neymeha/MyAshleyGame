@@ -30,7 +30,7 @@ public class MyGame extends Game {
 	*/
 	private SpriteBatch batch;
 
-	private GameCore core;
+	public GameCore core;
 
 	/*
 	Далее статичные константы для метода смены экрана
