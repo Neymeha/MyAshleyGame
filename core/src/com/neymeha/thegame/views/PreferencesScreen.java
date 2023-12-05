@@ -6,7 +6,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.neymeha.thegame.MyGame;
-import com.neymeha.thegame.huds.MenuScreenHud;
 import com.neymeha.thegame.huds.PreferencesScreenHud;
 import com.neymeha.thegame.utils.GameConfig;
 
@@ -37,7 +36,7 @@ public class PreferencesScreen implements Screen {
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
 
-        hud.drawAndAct(delta);
+        hud.actAndDraw(delta);
     }
 
     @Override

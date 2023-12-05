@@ -10,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 /*
 Класс пока без надобности но пусть полежит тут
 */
-public class KeyboardController implements InputProcessor {
+public class MyKeyboardController implements InputProcessor {
 
         public boolean left,right,up,down; // флаги реакции на нажатые нами стандартные кнопки, вверх вниз влево вправо
         /*

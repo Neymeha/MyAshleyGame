@@ -11,7 +11,7 @@ public class GameCore {
     public World world; // ядро игры должно содержать общий мир игры для всех физических обьектов
     private Box2DDebugRenderer debugRenderer; // ядро должно содержать дебаг что бы мы могли посмотреть на наши физ обьекты
     public OrthographicCamera camera; // без камеры тоже никуда, он отвечает за размер нашего окна в мир так сказать
-    private KeyboardController controller; // ипут контроллер для реакции на ввод
+    private MyKeyboardController controller; // ипут контроллер для реакции на ввод
     /*
 	Мой кастомный ассет манаджер
 	*/
@@ -43,7 +43,7 @@ public class GameCore {
         */
         debugRenderer = new Box2DDebugRenderer(true,true,true,true,true,true);
 
-        controller = new KeyboardController();
+        controller = new MyKeyboardController();
 
         assetManager = new MyAssetManager();
 

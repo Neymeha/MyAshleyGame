@@ -1,6 +1,5 @@
 package com.neymeha.thegame.views;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -10,7 +9,6 @@ import com.neymeha.thegame.GameCore;
 import com.neymeha.thegame.MyGame;
 import com.neymeha.thegame.huds.MenuScreenHud;
 import com.neymeha.thegame.utils.GameConfig;
-import com.neymeha.thegame.utils.MyAssetManager;
 
 public class MenuScreen implements Screen {
 
@@ -65,7 +63,7 @@ public class MenuScreen implements Screen {
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1); // отчищаем экран в черный цвет
 
-        hud.drawAndAct(delta); // говорим Stage отрисовать и обрабатывать актеров внутри
+        hud.actAndDraw(delta); // говорим Stage отрисовать и обрабатывать актеров внутри
     }
 
     @Override

@@ -2,13 +2,16 @@ package com.neymeha.thegame.huds;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.neymeha.thegame.GameCore;
 import com.neymeha.thegame.MyGame;
@@ -22,10 +25,11 @@ public class MenuScreenHud {
     public MenuScreenHud(MyGame parent, GameCore core) {
         this.parent = parent; // установили зависимость
         /*
-        Инициализируем вьюпорт
+        C фит вьюпорт проблема с заполняемостью заднего фона
+        со скрин вью портом обьекты на стейдже не скейляться
+        оставил пока fit а там посмотрим
         */
         Viewport gameViewport = new FitViewport(GameConfig.GAME_WIDTH, GameConfig.GAME_HEIGHT, new OrthographicCamera()); // можно поменять на стретч тогда кнопки будут растягивать с окном а не менять размер
-
         /*
         Инициализируем stage, добавлем в него тут же созданный вьюпорт и основной батч
         */
@@ -89,6 +93,9 @@ public class MenuScreenHud {
             }
         });
 
+        TextureAtlas atlas = parent.core.assetManager.manager.get(parent.core.assetManager.loadingImages);
+        TextureAtlas.AtlasRegion background = atlas.findRegion("flamebackground"); // фон
+        table.setBackground(new TiledDrawable(background)); // установили фон для таблицы
         /*
         Добавляем в таблицу актеров и дорбавляем заполнение по Х что бы все кнопки были одинакового размера,
         роу - переход к следующей ячейке таблицы вниз, так же добавляем отступы
@@ -104,7 +111,7 @@ public class MenuScreenHud {
         stage.addActor(table); // добавляем таблицу с элементами на Stage для дальнейшей обработки
     }
 
-    public void drawAndAct(float delta){
+    public void actAndDraw(float delta){
         /*
         ProjectionMatrix - это матрица проекции, которая определяет, как объекты в вашей игре будут отображаться
         на экране. В libgdx она используется для определения перспективы и преобразования координат объектов в
@@ -112,8 +119,8 @@ public class MenuScreenHud {
         */
         // Применение настроек вьюпорта к текущему состоянию экрана
         this.stage.getViewport().apply(true); // поскольку мы можем использовать не один вьюпорт нам нужно применить вьюпорт для стейдж перед выполнением команд
-        this.stage.draw(); // отрисовка актеров
         this.stage.act(delta); // и обработка инпута
+        this.stage.draw(); // отрисовка актеров
     }
 
     public void dispose(){

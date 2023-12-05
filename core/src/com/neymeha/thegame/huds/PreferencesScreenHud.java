@@ -2,17 +2,19 @@ package com.neymeha.thegame.huds;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.neymeha.thegame.MyGame;
 import com.neymeha.thegame.utils.GameConfig;
-import com.neymeha.thegame.views.MenuScreen;
 
 
 // класс по тиму MenuScreenHud с некоторыми дополнительными UI элементами
@@ -22,7 +24,11 @@ public class PreferencesScreenHud {
 
     public PreferencesScreenHud(MyGame parent) {
         this.parent = parent;
-
+        /*
+        C фит вьюпорт проблема с заполняемостью заднего фона
+        со скрин вью портом обьекты на стейдже не скейляться
+        оставил пока fit а там посмотрим
+        */
         Viewport gameViewport = new FitViewport(GameConfig.GAME_WIDTH, GameConfig.GAME_HEIGHT, new OrthographicCamera()); // можно поменять на стретч тогда кнопки будут растягивать с окном а не менять размер
 
         stage = new Stage(gameViewport, parent.getBatch());
@@ -114,6 +120,9 @@ public class PreferencesScreenHud {
             }
         });
 
+        TextureAtlas atlas = parent.core.assetManager.manager.get(parent.core.assetManager.loadingImages);
+        TextureAtlas.AtlasRegion background = atlas.findRegion("flamebackground"); // фон
+        table.setBackground(new TiledDrawable(background)); // установили фон для таблицы
         /*
         Добавляем все элементы в таблицу
         */
@@ -136,10 +145,10 @@ public class PreferencesScreenHud {
         stage.addActor(table); // и наконец добавили все в стейдж
     }
 
-    public void drawAndAct(float delta){
+    public void actAndDraw(float delta){
         this.stage.getViewport().apply(true);
-        this.stage.draw();
         this.stage.act(delta);
+        this.stage.draw();
     }
 
     public void dispose(){

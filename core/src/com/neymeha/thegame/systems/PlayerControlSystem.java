@@ -8,17 +8,17 @@ import com.badlogic.gdx.math.MathUtils;
 import com.neymeha.thegame.components.BodyComponent;
 import com.neymeha.thegame.components.PlayerComponent;
 import com.neymeha.thegame.components.StateComponent;
-import com.neymeha.thegame.utils.KeyboardController;
+import com.neymeha.thegame.utils.MyKeyboardController;
 
 public class PlayerControlSystem extends IteratingSystem {
     ComponentMapper<PlayerComponent> pm;
     ComponentMapper<BodyComponent> bodm;
     ComponentMapper<StateComponent> sm;
-    KeyboardController controller;
+    MyKeyboardController controller;
 
 
     @SuppressWarnings("unchecked")
-    public PlayerControlSystem(KeyboardController keyCon) {
+    public PlayerControlSystem(MyKeyboardController keyCon) {
         super(Family.all(PlayerComponent.class).get());
         controller = keyCon;
         pm = ComponentMapper.getFor(PlayerComponent.class);
