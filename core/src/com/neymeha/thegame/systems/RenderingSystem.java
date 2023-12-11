@@ -15,59 +15,89 @@ import com.neymeha.thegame.utils.ZComparator;
 
 import java.util.Comparator;
 
+import static com.neymeha.thegame.utils.GameConfig.*;
+
 public class RenderingSystem extends SortedIteratingSystem {
-    static final float PPM = 32.0f; // sets the amount of pixels each metre of box2d objects contains
+    /*
+    PPM в GameConfig
+    FRUSTUM_WIDTH
+    FRUSTUM_HEIGHT
+    PIXELS_TO_METRES
+    тоже поехали в GameConfig
+    */
+//    static final float PPM = 32.0f;
+//    static final float FRUSTUM_WIDTH = Gdx.graphics.getWidth()/PPM;
+//    static final float FRUSTUM_HEIGHT = Gdx.graphics.getHeight()/PPM;
+//    public static final float PIXELS_TO_METRES = 1.0f / PPM;
 
-    // this gets the height and width of our camera frustrum based off the width and height of the screen and our pixel per meter ratio
-    static final float FRUSTUM_WIDTH = Gdx.graphics.getWidth()/PPM;
-    static final float FRUSTUM_HEIGHT = Gdx.graphics.getHeight()/PPM;
-
-    public static final float PIXELS_TO_METRES = 1.0f / PPM; // get the ratio for converting pixels to metres
-
-    // static method to get screen width in metres
     private static Vector2 meterDimensions = new Vector2();
     private static Vector2 pixelDimensions = new Vector2();
+    /*
+    Статический метод для получения размера экрана в метрах
+    */
     public static Vector2 getScreenSizeInMeters(){
         meterDimensions.set(Gdx.graphics.getWidth()*PIXELS_TO_METRES,
                 Gdx.graphics.getHeight()*PIXELS_TO_METRES);
         return meterDimensions;
     }
 
-    // static method to get screen size in pixels
+    /*
+    Статический метод для получения размера экрана в пикселях
+    */
     public static Vector2 getScreenSizeInPixesl(){
         pixelDimensions.set(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         return pixelDimensions;
     }
 
-    // convenience method to convert pixels to meters
+    /*
+    Конвертор пикселей в метры
+    */
     public static float PixelsToMeters(float pixelValue){
         return pixelValue * PIXELS_TO_METRES;
     }
 
-    private SpriteBatch batch; // a reference to our spritebatch
-    private Array<Entity> renderQueue; // an array used to allow sorting of images allowing us to draw images on top of each other
-    private Comparator<Entity> comparator; // a comparator to sort images based on the z position of the transfromComponent
-    private OrthographicCamera cam; // a reference to our camera
+    private SpriteBatch batch; // ссылка для хранения нашего батча который мы передаем в конструкторе
+    private Array<Entity> renderQueue; // массив позволяющий сортировать картинки позволяющий отрисовать их одну над другой
+    private Comparator<Entity> comparator; // компоратор для сортировки картинок основанный на Z элементе трасформ компонента
+    private OrthographicCamera cam; // ссылка на камеру
 
-    // component mappers to get components from entities
+    /*
+    компонент мапперы для наших компонентов
+!!!!    но не уверен что они нужны так как я мапперы оставил в каждом компоненте как статичное поле
+    */
     private ComponentMapper<TextureComponent> textureM;
     private ComponentMapper<TransformComponent> transformM;
 
     @SuppressWarnings("unchecked")
     public RenderingSystem(SpriteBatch batch) {
-        // gets all entities with a TransofmComponent and TextureComponent
+        /*
+        Отправляем в родительский коструктор Family из компонентов которые мы будем итерировать в данной системе
+        вторым параметром задаем компортатор который будет сортировать наши сущности в системе для обработки
+
+        Таким образом мы передаем в систему все Entity которые обладают обоими компонентами и эти сущности будут отсо
+        ртированы ZComporator'ом
+
+        Family.all(TransformComponent.class, TextureComponent.class).get() - это вызов метода all() класса Family,
+        который принимает в качестве аргументов классы компонентов. В данном случае, мы указываем, что сущность должна
+        иметь как компонент TransformComponent, так и компонент TextureComponent. Метод get() возвращает объект Family,
+        который представляет собой группу компонентов, которые должны присутствовать у сущности, чтобы она была
+        обработана этой системой.
+        */
         super(Family.all(TransformComponent.class, TextureComponent.class).get(), new ZComparator());
 
-        //creates out componentMappers
+        /*
+        Создаем наши компонент мапперы
+    !!!!    что возможно лишние из за того что компоненты уже имеют такое статичное поле
+        */
         textureM = ComponentMapper.getFor(TextureComponent.class);
         transformM = ComponentMapper.getFor(TransformComponent.class);
 
-        // create the array for sorting entities
+        // инициализируем массив который будет нашей отсортированной очередью
         renderQueue = new Array<Entity>();
 
-        this.batch = batch;  // set our batch to the one supplied in constructor
+        this.batch = batch;  // присваиваем батч
 
-        // set up the camera to match our screen size
+        // настраиваем камеру так что бы она подходила под размеры экрана
         cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
         cam.position.set(FRUSTUM_WIDTH / 2f, FRUSTUM_HEIGHT / 2f, 0);
     }
@@ -76,7 +106,7 @@ public class RenderingSystem extends SortedIteratingSystem {
     public void update(float deltaTime) {
         super.update(deltaTime);
 
-        // sort the renderQueue based on z index
+        // сортировка очереди на основе Z индекса
         renderQueue.sort(comparator);
 
         // update camera and sprite batch
@@ -91,7 +121,7 @@ public class RenderingSystem extends SortedIteratingSystem {
             TransformComponent t = transformM.get(entity);
 
             if (tex.region == null || t.isHidden) {
-                continue;
+                continue; // переходим к следующей сущности если у текстуры регион пуст и если трансформ спрятан
             }
 
 
@@ -101,6 +131,14 @@ public class RenderingSystem extends SortedIteratingSystem {
             float originX = width/2f;
             float originY = height/2f;
 
+            /*
+            Отрисовываем текстуру tex.region
+            не совсем понимаю почему от координат мы отнимаем половину высоты и ширины
+            далее задаем центр текстуры получается?
+            высоту и ширину
+            масштаб по Х и по Y который перевели в метры
+            и задали угол поворота
+            */
             batch.draw(tex.region,
                     t.position.x - originX, t.position.y - originY,
                     originX, originY,

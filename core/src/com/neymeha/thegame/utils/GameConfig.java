@@ -7,6 +7,11 @@ public class GameConfig {
     public static final int GAME_WIDTH = 600;
     public static final int GAME_HEIGHT = 800;
     public static final int PPM = 25; // пиксели на каждый метр - нужно для преобразования физического мира относительно нашего экрана
+    public static final float FRUSTUM_WIDTH = Gdx.graphics.getWidth()/PPM; // ширина видимой области(камеры) экрана в метрах
+    public static final float FRUSTUM_HEIGHT = Gdx.graphics.getHeight()/PPM; // высота видимой области экрана(камеры) в метрах
+    public static final float PIXELS_TO_METRES = 1.0f / PPM; // соотношение перевода пикселя в метры
+    public static final float MAX_STEP_TIME = 1/45f;
+
     /*
     Ниже наши ключи для хранимых значений в Preferences
     */

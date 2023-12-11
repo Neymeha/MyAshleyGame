@@ -6,6 +6,9 @@ import com.neymeha.thegame.components.TransformComponent;
 
 import java.util.Comparator;
 
+/*
+Наш компаратор для сравнения энтити по трансформ компоненту а точнее по его Z координате
+*/
 public class ZComparator implements Comparator<Entity> {
     private ComponentMapper<TransformComponent> cmTrans;
 
