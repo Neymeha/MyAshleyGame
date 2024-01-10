@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.neymeha.thegame.MyGame;
 import com.neymeha.thegame.huds.actors.LoadingBarPart;
@@ -32,7 +31,7 @@ public class LoadingScreenHud {
         */
         Viewport gameViewport = new FitViewport(GameConfig.GAME_WIDTH, GameConfig.GAME_HEIGHT, new OrthographicCamera()); // можно поменять на стретч тогда кнопки будут растягивать с окном а не менять размер
 
-        stage = new Stage(gameViewport, parent.getBatch()); // инициализируем стейдж
+        stage = new Stage(gameViewport, parent.core.batch); // инициализируем стейдж
 
         setupUI(); // настраиваем весь интерфейс
 
@@ -40,14 +39,10 @@ public class LoadingScreenHud {
     }
 
     public void setupUI(){
-        // ставим в очередь на загрузку ресурсы и загружаем
-        parent.core.assetManager.queueAddLoadingImages();
-        parent.core.assetManager.manager.finishLoading();
-
         /*
         Достаем все нужные нам текстуры и анимации для дальнейшей работы с ними
         */
-        TextureAtlas atlas = parent.core.assetManager.manager.get(parent.core.assetManager.loadingImages); // достали весь атлас загрузочный
+        TextureAtlas atlas = parent.core.assetManager.getLoadingAtlas(); // достали весь атлас загрузочный
         TextureAtlas.AtlasRegion title = atlas.findRegion("staying-alight-logo"); // доставли основной логотип с названием
         TextureAtlas.AtlasRegion dash = atlas.findRegion("loading-dash"); // достали элемент лоадинг бара
         Animation flameAnimation = new Animation(0.07f, atlas.findRegions("flames/flames"), Animation.PlayMode.LOOP); // достали анимацию целиком

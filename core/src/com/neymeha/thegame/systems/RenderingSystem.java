@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.neymeha.thegame.components.TextureComponent;
 import com.neymeha.thegame.components.TransformComponent;
 import com.neymeha.thegame.utils.ZComparator;
@@ -60,6 +61,7 @@ public class RenderingSystem extends SortedIteratingSystem {
     private Array<Entity> renderQueue; // массив позволяющий сортировать картинки позволяющий отрисовать их одну над другой
     private Comparator<Entity> comparator; // компоратор для сортировки картинок основанный на Z элементе трасформ компонента
     private OrthographicCamera cam; // ссылка на камеру
+    private Viewport viewport;
 
     /*
     компонент мапперы для наших компонентов
@@ -69,7 +71,7 @@ public class RenderingSystem extends SortedIteratingSystem {
     private ComponentMapper<TransformComponent> transformM;
 
     @SuppressWarnings("unchecked")
-    public RenderingSystem(SpriteBatch batch) {
+    public RenderingSystem(SpriteBatch batch, OrthographicCamera cam,Viewport viewport) {
         /*
         Отправляем в родительский коструктор Family из компонентов которые мы будем итерировать в данной системе
         вторым параметром задаем компортатор который будет сортировать наши сущности в системе для обработки
@@ -96,9 +98,10 @@ public class RenderingSystem extends SortedIteratingSystem {
         renderQueue = new Array<Entity>();
 
         this.batch = batch;  // присваиваем батч
+        this.cam = cam; // присвоили камеру
+        this.viewport = viewport; // присвоили вьбпорт что бы сделать viewport.apply(true)
 
         // настраиваем камеру так что бы она подходила под размеры экрана
-        cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
         cam.position.set(FRUSTUM_WIDTH / 2f, FRUSTUM_HEIGHT / 2f, 0);
     }
 
@@ -109,6 +112,7 @@ public class RenderingSystem extends SortedIteratingSystem {
         // сортировка очереди на основе Z индекса
         renderQueue.sort(comparator);
 
+        viewport.apply(); // без этой строки окно после растягивания при перемещении картинка растягивается
         // update camera and sprite batch
         cam.update();
         batch.setProjectionMatrix(cam.combined);
@@ -123,7 +127,6 @@ public class RenderingSystem extends SortedIteratingSystem {
             if (tex.region == null || t.isHidden) {
                 continue; // переходим к следующей сущности если у текстуры регион пуст и если трансформ спрятан
             }
-
 
             float width = tex.region.getRegionWidth();
             float height = tex.region.getRegionHeight();
@@ -154,11 +157,6 @@ public class RenderingSystem extends SortedIteratingSystem {
     @Override
     public void processEntity(Entity entity, float deltaTime) {
         renderQueue.add(entity);
-    }
-
-    // convenience method to get camera
-    public OrthographicCamera getCamera() {
-        return cam;
     }
 }
 

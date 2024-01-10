@@ -31,7 +31,7 @@ public class PreferencesScreenHud {
         */
         Viewport gameViewport = new FitViewport(GameConfig.GAME_WIDTH, GameConfig.GAME_HEIGHT, new OrthographicCamera()); // можно поменять на стретч тогда кнопки будут растягивать с окном а не менять размер
 
-        stage = new Stage(gameViewport, parent.getBatch());
+        stage = new Stage(gameViewport, parent.core.batch);
 
         Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
 
@@ -120,7 +120,7 @@ public class PreferencesScreenHud {
             }
         });
 
-        TextureAtlas atlas = parent.core.assetManager.manager.get(parent.core.assetManager.loadingImages);
+        TextureAtlas atlas = parent.core.assetManager.getLoadingAtlas();
         TextureAtlas.AtlasRegion background = atlas.findRegion("flamebackground"); // фон
         table.setBackground(new TiledDrawable(background)); // установили фон для таблицы
         /*

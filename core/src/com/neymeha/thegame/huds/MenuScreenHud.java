@@ -22,7 +22,7 @@ public class MenuScreenHud {
     private Stage stage; // для размещения актеров
 
 
-    public MenuScreenHud(MyGame parent, GameCore core) {
+    public MenuScreenHud(MyGame parent) {
         this.parent = parent; // установили зависимость
         /*
         C фит вьюпорт проблема с заполняемостью заднего фона
@@ -33,16 +33,14 @@ public class MenuScreenHud {
         /*
         Инициализируем stage, добавлем в него тут же созданный вьюпорт и основной батч
         */
-        stage = new Stage(gameViewport, parent.getBatch());
+        stage = new Stage(gameViewport, parent.core.batch);
 
         /*
         Добавляем skin для нашего проекта в частности для кнопок
         */
 //        Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         // Не верное написание, ради одного скина новый обьект, надо переделать
-        core.assetManager.queueAddSkin();  //new
-        core.assetManager.manager.finishLoading(); // new
-        Skin skin = core.assetManager.manager.get(core.assetManager.skin); // new
+        Skin skin = parent.core.assetManager.getGameSkin(); // new
         /*
         Вся остальная доп настройка наших актеров для нашего стейдж
         */
@@ -93,7 +91,7 @@ public class MenuScreenHud {
             }
         });
 
-        TextureAtlas atlas = parent.core.assetManager.manager.get(parent.core.assetManager.loadingImages);
+        TextureAtlas atlas = parent.core.assetManager.getLoadingAtlas();
         TextureAtlas.AtlasRegion background = atlas.findRegion("flamebackground"); // фон
         table.setBackground(new TiledDrawable(background)); // установили фон для таблицы
         /*

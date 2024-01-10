@@ -25,11 +25,6 @@ public class MyGame extends Game {
 	private GameScreen gameScreen;
 	private EndScreen endScreen;
 
-	/*
-	Единственный на все экраны батч который мы будем использовать
-	*/
-	private SpriteBatch batch;
-
 	public GameCore core;
 
 	/*
@@ -48,18 +43,16 @@ public class MyGame extends Game {
 	*/
 	@Override
 	public void create() {
-		batch = new SpriteBatch();
+		/*
+		сначала инициализируем ядро
+		затем лоадинг скрин так ему понадобится наше ядро
+		и переключаемся на лоадинг скрин в котором пойдет загрузка наших ассетов
+		*/
+
 		core = new GameCore();
 		loadingScreen = new LoadingScreen(this);
 		setScreen(loadingScreen);
-
-		/*
-		Загруждаем музыку, ждем окончания загрузки, присваиваем переменной, поскольку музыка в главном классе запущена
-		она будет играть на протяжении всей игры.
-		*/
-		core.assetManager.queueAddMusic();
-		core.assetManager.manager.finishLoading();
-		playingSong = core.assetManager.manager.get(core.assetManager.playingSong);
+		playingSong = core.assetManager.getGameMusic();
 		// закольцовываем музыку и запускаем
 		playingSong.setLooping(true);
 		playingSong.play();
@@ -72,7 +65,7 @@ public class MyGame extends Game {
 	public void changeScreen(int screen) {
 		switch (screen) {
 			case MENU:
-				if (menuScreen == null) menuScreen = new MenuScreen(this, core);
+				if (menuScreen == null) menuScreen = new MenuScreen(this);
 				this.setScreen(menuScreen);
 				break;
 			case PREFERENCES:
@@ -80,7 +73,7 @@ public class MyGame extends Game {
 				this.setScreen(preferencesScreen);
 				break;
 			case GAME:
-				if (gameScreen == null) gameScreen = new GameScreen(this, core);
+				if (gameScreen == null) gameScreen = new GameScreen(this);
 				this.setScreen(gameScreen);
 				break;
 			case ENDGAME:
@@ -91,20 +84,12 @@ public class MyGame extends Game {
 	}
 
 	/*
-	Геттер для нашего батча что бы его переиспользовать
-	*/
-	public SpriteBatch getBatch() {
-		return batch;
-	}
-
-	/*
 	Переопределили dispose что бы освобождать наш батч из памяти.
 	*/
 	@Override
 	public void dispose() {
 		super.dispose();
-		batch.dispose();
 		playingSong.dispose();
-		core.assetManager.manager.dispose();
+		core.dispose();
 	}
 }

@@ -35,12 +35,12 @@ public class MenuScreen implements Screen {
     OrthographicCamera позволяет настроить размеры и положение области мира, которая будет отображаться на экране.
     */
 
-    public MenuScreen(MyGame parent, GameCore core) {
+    public MenuScreen(MyGame parent) {
         this.parent = parent; // инициализировали зависимость
         /*
         Далее инициализация наших обьявленный переменных выше
         */
-        hud = new MenuScreenHud(parent, core);
+        hud = new MenuScreenHud(parent);
         mainCamera = new OrthographicCamera();
 
         mainCamera.setToOrtho(false, GameConfig.GAME_WIDTH, GameConfig.GAME_HEIGHT); // задаем размер камеры

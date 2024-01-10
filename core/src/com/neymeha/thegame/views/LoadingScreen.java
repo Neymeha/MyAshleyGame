@@ -32,17 +32,16 @@ public class LoadingScreen implements Screen {
 
     public LoadingScreen(MyGame parent) {
         this.parent = parent;
+        // ставим в очередь на загрузку ресурсы и загружаем
+        parent.core.assetManager.queueAddLoadingImages();
+        System.out.println("Loading loading images....");
+        parent.core.assetManager.queueAddSkin();
+        System.out.println("Loading skin....");
+        parent.core.assetManager.queueAddMusic();
+        System.out.println("Loading music....");
+        parent.core.assetManager.finishLoading();
+        System.out.println("Finished");
         hud = new LoadingScreenHud(parent);
-        /*
-        Переехало в hud класс
-        */
-//        /*
-//        инициализируем стейдж так как он будет отрисовывать наш лоадинг бар
-//        */
-//        stage = new Stage(new ScreenViewport());
-//        loadAssets();
-        parent.core.assetManager.queueAddImages();
-        System.out.println("Loading images....");
 //        /*
 //        Функция смешивания определяет, как цвета пикселей объектов будут смешиваться при отрисовке на экране.
 //        */
@@ -105,7 +104,7 @@ public class LoadingScreen implements Screen {
         Да и сам прогресс бар можно делать с помощью стилей и отдельного класса в либе, если что спрашивай чат гпт
         */
         // проверяем закончил ли менеджер с прошлой загрузкой
-        if (parent.core.assetManager.manager.update()) { // метод который возвращет тру если в очереди нет загрузок незаконченных
+        if (parent.core.assetManager.update()) { // метод который возвращет тру если в очереди нет загрузок незаконченных
             currentLoadingStage+= 1; // идем дальше оп свичу с помощью переменной а так же исп ее в лоадинг баре
             hud.addLoadingBarStage(currentLoadingStage, hud.getStage().getRoot().<Table>findActor("loadingTable"));
             switch(currentLoadingStage){

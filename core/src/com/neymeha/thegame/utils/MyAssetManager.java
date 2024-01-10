@@ -12,7 +12,7 @@ public class MyAssetManager {
     /*
     Собственно сам ассет менеджер
     */
-    public final AssetManager manager = new AssetManager();
+    private final AssetManager manager = new AssetManager();
     /*
     Линки на мои текстуры
     */
@@ -57,5 +57,33 @@ public class MyAssetManager {
     }
 
     public void queueAddParticleEffects(){
+    }
+
+    public void finishLoading(){
+        manager.finishLoading();
+    }
+
+    public TextureAtlas getGameAtlas(){
+        return manager.get(gameImages); // ищем текстурный атлас
+    }
+
+    public TextureAtlas getLoadingAtlas(){
+        return manager.get(loadingImages);
+    }
+
+    public Music getGameMusic(){
+        return manager.get(playingSong);
+    }
+
+    public Skin getGameSkin(){
+        return manager.get(skin);
+    }
+
+    public boolean update(){
+        return manager.update();
+    }
+
+    public void dispose(){
+        manager.dispose();
     }
 }
