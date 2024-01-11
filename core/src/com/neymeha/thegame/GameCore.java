@@ -83,15 +83,17 @@ public class GameCore {
 //        boing = assetManager.manager.get(assetManager.boingSound, Sound.class);
 //    }
 
-    public void initEngineSystems(){ // добавляем системы в движок
+    public void initEngineSystems(Entity player){ // добавляем системы в движок
         engine.addSystem(new AnimationSystem());
-        engine.addSystem(new RenderingSystem(batch, camera, gameViewport));
         engine.addSystem(new PhysicsSystem(world));
         engine.addSystem(new PhysicsDebugSystem(world, camera));
         engine.addSystem(new CollisionSystem());
         engine.addSystem(new PlayerControlSystem(controller));
+        engine.addSystem(new WallSystem(player));
+        engine.addSystem(new WaterFloorSystem(player));  // takes the player as an argument
         engine.addSystem(new LevelGenerationSystem(lvlFactory));
         engine.addSystem(new TrackingSystem());
+        engine.addSystem(new RenderingSystem(batch, camera, gameViewport));
     }
 
 //    public void initEntities(){ // добавляем игровые обьекты в мир

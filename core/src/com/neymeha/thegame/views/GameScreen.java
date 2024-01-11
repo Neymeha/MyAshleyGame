@@ -1,5 +1,6 @@
 package com.neymeha.thegame.views;
 
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.neymeha.thegame.GameCore;
 import com.neymeha.thegame.MyGame;
+import com.neymeha.thegame.utils.DFUtils;
 import com.neymeha.thegame.utils.GameConfig;
 
 public class GameScreen implements Screen {
@@ -20,9 +22,20 @@ public class GameScreen implements Screen {
 
     public GameScreen(MyGame parent) {
         this.parent = parent;
-        parent.core.initEngineSystems();
-        parent.core.lvlFactory.createPlayer(parent.core.assetManager.getGameAtlas().findRegion("player"),parent.core.camera);
-        parent.core.lvlFactory.createFloor(parent.core.assetManager.getGameAtlas().findRegion("player"));
+        // записываем в переменную плеера что бы передать его в запуск системы а именно в систему движения воды
+        // не совсем нравится мне решение но пока пусть будет так
+        Entity entity = parent.core.lvlFactory.createPlayer(parent.core.assetManager.getGameAtlas().findRegion("player"),parent.core.camera);
+//        parent.core.lvlFactory.createFloor(parent.core.assetManager.getGameAtlas().findRegion("player")); // устарело
+        /*
+        Ниже создаем обьекты игрового мира пол, водяной уровень, стены, поправка на ППМ обязательно ведь все обьекты физические
+        создаем с помощью ютил класса не подгружая и не создавая текстуры.
+        */
+        parent.core.lvlFactory.customCreateFloor(40*GameConfig.PPM,1*GameConfig.PPM,"11331180");
+
+        parent.core.lvlFactory.customCreateWaterFloor(40*GameConfig.PPM,10*GameConfig.PPM,"11113380");
+        parent.core.lvlFactory.customCreateWall(1*GameConfig.PPM,60*GameConfig.PPM,"222222FF");
+
+        parent.core.initEngineSystems(entity);
     }
 
     @Override

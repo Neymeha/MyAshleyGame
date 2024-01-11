@@ -35,7 +35,7 @@ public class PlayerControlSystem extends IteratingSystem {
         */
         BodyComponent body = bodm.get(entity);
         StateComponent state = sm.get(entity);
-
+        PlayerComponent player = pm.get(entity);
         /*
         Далее 3 условия для того что менять состояния в котором находиться наш игрок
         */
@@ -81,5 +81,13 @@ public class PlayerControlSystem extends IteratingSystem {
             body.body.applyLinearImpulse(0, 75f, body.body.getWorldCenter().x,body.body.getWorldCenter().y, true);
             state.set(StateComponent.STATE_JUMPING);
         }
+
+        // make player jump very high
+        if(player.onSpring){
+            body.body.applyLinearImpulse(0, 175f, body.body.getWorldCenter().x,body.body.getWorldCenter().y, true);
+            state.set(StateComponent.STATE_JUMPING);
+            player.onSpring = false; // что бы не прыгал постоянно
+        }
+
     }
 }

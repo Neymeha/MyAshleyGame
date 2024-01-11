@@ -37,22 +37,38 @@ public class CollisionSystem extends IteratingSystem {
         // далее проверки идут если энтити со столкновением существует продолжаем
         if(collidedEntity != null){
             TypeComponent type = collidedEntity.getComponent(TypeComponent.class);
-            // если у энтити с которым столкнулись есть
+            // если у энтити с которым столкнулись есть определенный TYPE
             if(type != null){
                 switch(type.type){
-                    // в операторе свич согласно определенному типу энтити выполняем кусок кода
-                    // для примера просто сообщение в консоль
                     case TypeComponent.ENEMY:
+                        //do player hit enemy thing
                         System.out.println("player hit enemy");
+                        PlayerComponent pl = pm.get(entity);
+                        pl.isDead = true;
+                        int score = (int) pl.cam.position.y;
+                        System.out.println("Score = "+ score);
+                        pm.get(entity).isDead = true;
                         break;
                     case TypeComponent.SCENERY:
+                        //do player hit scenery thing
+                        pm.get(entity).onPlatform = true;
                         System.out.println("player hit scenery");
                         break;
+                    case TypeComponent.SPRING:
+                        //do player hit other thing
+                        pm.get(entity).onSpring = true;
+                        System.out.println("player hit spring: bounce up");
+                        break;
                     case TypeComponent.OTHER:
+                        //do player hit other thing
                         System.out.println("player hit other");
-                        break; // фактически и не нужная строка
+                        break;
+                    default:
+                        System.out.println("No matching type found");
                 }
-                cc.collisionEntity = null; // делаем энтити пригодным для удаления GC не совсем понятно зачем ибо скоп закончился
+                cc.collisionEntity = null; // делаем пригодным для удаление GC
+            }else{
+                System.out.println("type == null");
             }
         }
 

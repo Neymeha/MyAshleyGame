@@ -25,7 +25,7 @@ public class LevelGenerationSystem extends IteratingSystem {
         TransformComponent trans = tm.get(entity);
         int currentPosition = (int) trans.position.y ;
         if((currentPosition + 7) > lf.currentLevel){
-            lf.generateLevel(currentPosition + 20);
+            lf.generateLevel(currentPosition + 7);
         }
     }
 }

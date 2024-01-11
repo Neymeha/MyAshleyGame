@@ -96,6 +96,7 @@ public class RenderingSystem extends SortedIteratingSystem {
 
         // инициализируем массив который будет нашей отсортированной очередью
         renderQueue = new Array<Entity>();
+        comparator = new ZComparator();
 
         this.batch = batch;  // присваиваем батч
         this.cam = cam; // присвоили камеру
